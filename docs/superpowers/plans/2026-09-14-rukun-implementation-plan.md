@@ -107,10 +107,10 @@
 - Create: `backend/internal/sync/validator.go`
 - Test: `backend/internal/sync/push_test.go`
 
-- [ ] **Step 1: Handle batch event push from mobile terminals**
-- [ ] **Step 2: Apply events transactionally to materialized tables (`sales`, `stock_events`)**
-- [ ] **Step 3: Return list of acknowledged event IDs**
-- [ ] **Step 4: Commit:** `feat(backend): batch sync push endpoint with transactional materialize`
+- [x] **Step 1: Handle batch event push from mobile terminals**
+- [x] **Step 2: Apply events transactionally to materialized tables (`sales`, `stock_events`)**
+- [x] **Step 3: Return list of acknowledged event IDs**
+- [x] **Step 4: Commit:** `feat(backend): batch sync push endpoint with transactional materialize`
 
 ---
 

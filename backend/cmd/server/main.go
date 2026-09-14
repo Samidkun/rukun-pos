@@ -13,17 +13,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"rukun.pos/backend/internal/store"
+	syncengine "rukun.pos/backend/internal/sync"
 )
 
-func main() {
-	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-	slog.SetDefault(logger)
-
-	port := os.Getenv("SERVER_PORT")
-	if port == "" {
-		port = "8080"
-	}
-
+func buildRouter(pool *pgxpool.Pool) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -43,6 +38,36 @@ func main() {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`{"status":"ok","app":"rukun_backend"}`))
 	})
+
+	pushService := syncengine.NewPushService(pool)
+	syncHandler := syncengine.NewHandler(pushService)
+	r.Post("/api/v1/sync/push", syncHandler.HandlePush)
+
+	return r
+}
+
+func main() {
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	slog.SetDefault(logger)
+
+	port := os.Getenv("SERVER_PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	dbCtx, dbCancel := context.WithTimeout(context.Background(), 5*time.Second)
+	pool, err := store.ConnectDB(dbCtx, store.DefaultConnStr())
+	dbCancel()
+	if err != nil {
+		slog.Warn("PostgreSQL not reachable at startup, sync engine running in fallback mode", "error", err)
+	} else {
+		defer pool.Close()
+		if err := store.RunMigrations(pool); err != nil {
+			slog.Error("Failed to apply database migrations", "error", err)
+		}
+	}
+
+	r := buildRouter(pool)
 
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%s", port),
