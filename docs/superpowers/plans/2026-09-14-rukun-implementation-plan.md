@@ -19,11 +19,11 @@
 - Scaffold: `backend/` via `go mod init rukun.pos/backend`
 - Create: `README.md`
 
-- [ ] **Step 1: Setup docker-compose.yml & local PostgreSQL**
-- [ ] **Step 2: Initialize Go module & essential dependencies** (`chi` / `fiber`, `pgx/v5`, `goose`, `google/uuid`)
-- [ ] **Step 3: Initialize Flutter mobile app with FVM stable**
-- [ ] **Step 4: Verify builds (`go build ./...` & `fvm flutter analyze`)**
-- [ ] **Step 5: Commit:** `chore: scaffold rukun monorepo with go backend and flutter mobile`
+- [x] **Step 1: Setup docker-compose.yml & local PostgreSQL**
+- [x] **Step 2: Initialize Go module & essential dependencies** (`chi` / `fiber`, `pgx/v5`, `goose`, `google/uuid`)
+- [x] **Step 3: Initialize Flutter mobile app with FVM stable**
+- [x] **Step 4: Verify builds (`go build ./...` & `fvm flutter analyze`)**
+- [x] **Step 5: Commit:** `chore: scaffold rukun monorepo with go backend and flutter mobile`
 
 ---
 
