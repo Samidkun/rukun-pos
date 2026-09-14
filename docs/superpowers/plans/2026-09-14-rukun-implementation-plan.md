@@ -63,11 +63,11 @@
 - Create: `mobile/lib/features/cashier/domain/cart_notifier.dart`
 - Test: `mobile/test/features/cashier_flow_test.dart`
 
-- [ ] **Step 1: Product grid with instant search & stock badge**
-- [ ] **Step 2: Cart management (tambah, kurangi, hitung total)**
-- [ ] **Step 3: Checkout modal (cash / instant offline receipt)**
-- [ ] **Step 4: Atomic local transaction: Simpan `sale` + Simpan `outbox_events` + Potong local stock**
-- [ ] **Step 5: Commit:** `feat(mobile): offline cashier checkout flow with instant receipt preview`
+- [x] **Step 1: Product grid with instant search & stock badge**
+- [x] **Step 2: Cart management (tambah, kurangi, hitung total)**
+- [x] **Step 3: Checkout modal (cash / instant offline receipt)**
+- [x] **Step 4: Atomic local transaction: Simpan `sale` + Simpan `outbox_events` + Potong local stock**
+- [x] **Step 5: Commit:** `feat(mobile): offline cashier checkout flow with instant receipt preview`
 
 ---
 
