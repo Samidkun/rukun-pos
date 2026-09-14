@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rukun POS — Live Owner Console</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Top Bar -->
+    <header class="top-bar">
+      <div class="brand">
+        <span class="brand-title">RUKUN</span>
+        <span class="brand-sub">// LIVE OWNER CONSOLE</span>
+      </div>
+      <div class="header-right">
+        <div id="connection-status" class="status-badge connecting">
+          <span class="status-dot"></span>
+          <span id="status-label">Menghubungkan SSE...</span>
+        </div>
+        <button id="btn-sim-sale" class="btn btn-outline">+ Simulasi Masuk</button>
+      </div>
+    </header>
+
+    <!-- Top KPI Cards -->
+    <section class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">TOTAL OMZET HARI INI</div>
+        <div class="kpi-value lime" id="total-revenue">Rp 0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">TOTAL TRANSAKSI</div>
+        <div class="kpi-value" id="total-sales-count">0</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">TERMINAL AKTIF</div>
+        <div class="kpi-value" id="active-terminals">2 (T01, T02)</div>
+      </div>
+      <div class="kpi-card" id="card-oversold">
+        <div class="kpi-label">STATUS KONFLIK (C1)</div>
+        <div class="kpi-value mint" id="oversold-status">AMAN (0)</div>
+      </div>
+    </section>
+
+    <!-- Main Live Console Split -->
+    <main class="console-body">
+      <!-- Left: Realtime Transaction Feed -->
+      <section class="feed-section">
+        <div class="section-header">
+          <h2>FEED TRANSAKSI REAL-TIME</h2>
+          <span class="section-sub" id="feed-counter">0 transaksi tersinkron</span>
+        </div>
+        <div id="transaction-feed" class="transaction-feed">
+          <div class="empty-feed" id="empty-feed-placeholder">
+            Menunggu transaksi masuk dari terminal kasir via SSE...
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Operational Insights & Terminals -->
+      <aside class="sidebar-section">
+        <!-- Terminal Status -->
+        <div class="panel-card">
+          <div class="panel-title">STATUS TERMINAL KASIR</div>
+          <div class="terminal-list">
+            <div class="terminal-item">
+              <div class="term-info">
+                <span class="term-badge">T01</span>
+                <div>
+                  <div class="term-name">Kasir Depan</div>
+                  <div class="term-meta" id="t01-meta">Offline-first ready</div>
+                </div>
+              </div>
+              <span class="term-status-dot mint"></span>
+            </div>
+            <div class="terminal-item">
+              <div class="term-info">
+                <span class="term-badge">T02</span>
+                <div>
+                  <div class="term-name">Kasir Bar</div>
+                  <div class="term-meta" id="t02-meta">Offline-first ready</div>
+                </div>
+              </div>
+              <span class="term-status-dot mint"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Selling Products -->
+        <div class="panel-card">
+          <div class="panel-title">PRODUK TERLARIS</div>
+          <div id="top-products-list" class="top-products-list">
+            <div class="empty-sub">Belum ada data penjualan</div>
+          </div>
+        </div>
+
+        <!-- Sync Engine Specs -->
+        <div class="panel-card">
+          <div class="panel-title">ARSITEKTUR SINKRONISASI</div>
+          <div class="specs-list">
+            <div class="spec-row">
+              <span class="spec-label">Protokol</span>
+              <span class="spec-val">Append-only Event Log</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Idempotency</span>
+              <span class="spec-val">UUID v4 dedupe</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Stok Model</span>
+              <span class="spec-val">Derived Ledger (Komutatif)</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Oversold (C1)</span>
+              <span class="spec-val">Eksplisit (Bukan data corrupt)</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
