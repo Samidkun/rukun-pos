@@ -187,10 +187,10 @@
 - Create: `dashboard/styles.css` (Dark theme matching mobile)
 - Test: `backend/tests/e2e_live_feed_test.go`
 
-- [ ] **Step 1: Live feed of incoming transactions with device badge (`Kasir 1`, `Kasir 2`)**
-- [ ] **Step 2: Real-time revenue counter & top-selling items**
-- [ ] **Step 3: Oversold stock alert banner**
-- [ ] **Step 4: Commit:** `feat(dashboard): live owner sales feed and real-time revenue stats`
+- [x] **Step 1: Live feed of incoming transactions with device badge (`Kasir 1`, `Kasir 2`)**
+- [x] **Step 2: Real-time revenue counter & top-selling items**
+- [x] **Step 3: Oversold stock alert banner**
+- [x] **Step 4: Commit:** `feat(dashboard): live owner sales feed and real-time revenue stats`
 
 ---
 
