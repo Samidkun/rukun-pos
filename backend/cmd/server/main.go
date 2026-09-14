@@ -40,8 +40,10 @@ func buildRouter(pool *pgxpool.Pool) *chi.Mux {
 	})
 
 	pushService := syncengine.NewPushService(pool)
-	syncHandler := syncengine.NewHandler(pushService)
+	pullService := syncengine.NewPullService(pool)
+	syncHandler := syncengine.NewHandler(pushService, pullService)
 	r.Post("/api/v1/sync/push", syncHandler.HandlePush)
+	r.Get("/api/v1/sync/pull", syncHandler.HandlePull)
 
 	return r
 }

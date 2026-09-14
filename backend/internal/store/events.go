@@ -48,13 +48,26 @@ type SyncPushResponse struct {
 	CatalogVersion int64           `json:"catalog_version"`
 }
 
+// ProductCatalogItem represents a product entity sent in delta catalog sync.
+type ProductCatalogItem struct {
+	ID             string  `json:"id"`
+	Name           string  `json:"name"`
+	Category       *string `json:"category"`
+	PriceCents     int64   `json:"price_cents"`
+	BaseStock      int     `json:"base_stock"`
+	CatalogVersion int64   `json:"catalog_version"`
+	Deleted        bool    `json:"deleted"`
+	UpdatedHLC     *string `json:"updated_hlc,omitempty"`
+}
+
 // SyncPullResponse represents changes sent to a client pulling updates.
 type SyncPullResponse struct {
-	Events         []Event          `json:"events"`
-	Catalog        *json.RawMessage `json:"catalog,omitempty"`
-	NextSince      int64            `json:"next_since"`
-	HasMore        bool             `json:"has_more"`
-	CatalogVersion int64            `json:"catalog_version"`
+	Events                []Event              `json:"events"`
+	Catalog               []ProductCatalogItem `json:"catalog"`
+	NextSince             int64                `json:"next_since"`
+	CurrentCatalogVersion int64                `json:"current_catalog_version"`
+	CatalogVersion        int64                `json:"catalog_version"`
+	HasMore               bool                 `json:"has_more"`
 }
 
 const (
@@ -72,6 +85,19 @@ FROM events
 WHERE server_seq > $1
 ORDER BY server_seq ASC
 LIMIT $2;
+`
+
+	selectCurrentCatalogVersionQuery = `
+SELECT COALESCE(MAX(version), 1)
+FROM catalog_version
+WHERE id = 1;
+`
+
+	selectActiveProductsQuery = `
+SELECT id, name, category, price_cents, updated_hlc, deleted, catalog_version
+FROM products
+WHERE deleted = false
+ORDER BY id ASC;
 `
 )
 
@@ -178,3 +204,60 @@ func (s *Store) StoreEvent(ctx context.Context, tx pgx.Tx, event *Event) (bool, 
 func (s *Store) GetEventsAfterSeq(ctx context.Context, afterSeq int64, limit int) ([]Event, error) {
 	return GetEventsAfterSeq(ctx, s.Pool, afterSeq, limit)
 }
+
+// GetCurrentCatalogVersion returns the current global catalog version.
+func GetCurrentCatalogVersion(ctx context.Context, pool *pgxpool.Pool) (int64, error) {
+	var version int64
+	err := pool.QueryRow(ctx, selectCurrentCatalogVersionQuery).Scan(&version)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return 1, nil
+		}
+		return 1, fmt.Errorf("query current catalog version: %w", err)
+	}
+	return version, nil
+}
+
+// GetActiveProducts fetches all non-deleted products in the catalog.
+func GetActiveProducts(ctx context.Context, pool *pgxpool.Pool) ([]ProductCatalogItem, error) {
+	rows, err := pool.Query(ctx, selectActiveProductsQuery)
+	if err != nil {
+		return nil, fmt.Errorf("query active products: %w", err)
+	}
+	defer rows.Close()
+
+	items := make([]ProductCatalogItem, 0)
+	for rows.Next() {
+		var item ProductCatalogItem
+		if err := rows.Scan(
+			&item.ID,
+			&item.Name,
+			&item.Category,
+			&item.PriceCents,
+			&item.UpdatedHLC,
+			&item.Deleted,
+			&item.CatalogVersion,
+		); err != nil {
+			return nil, fmt.Errorf("scan product: %w", err)
+		}
+		item.BaseStock = 0
+		items = append(items, item)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate products rows: %w", err)
+	}
+
+	return items, nil
+}
+
+// GetCurrentCatalogVersion provides Store method access to GetCurrentCatalogVersion.
+func (s *Store) GetCurrentCatalogVersion(ctx context.Context) (int64, error) {
+	return GetCurrentCatalogVersion(ctx, s.Pool)
+}
+
+// GetActiveProducts provides Store method access to GetActiveProducts.
+func (s *Store) GetActiveProducts(ctx context.Context) ([]ProductCatalogItem, error) {
+	return GetActiveProducts(ctx, s.Pool)
+}
+

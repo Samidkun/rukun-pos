@@ -119,9 +119,9 @@
 - Create: `backend/internal/sync/pull_handler.go`
 - Test: `backend/internal/sync/pull_test.go`
 
-- [ ] **Step 1: Return config & product updates since `last_server_version`**
-- [ ] **Step 2: Return global stock adjustment deltas**
-- [ ] **Step 3: Commit:** `feat(backend): delta sync pull endpoint with version cursor`
+- [x] **Step 1: Return config & product updates since `last_server_version`**
+- [x] **Step 2: Return global stock adjustment deltas**
+- [x] **Step 3: Commit:** `feat(backend): delta sync pull endpoint with version cursor`
 
 ---
 

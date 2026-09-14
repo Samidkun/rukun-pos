@@ -275,11 +275,21 @@ func (s *PushService) getSyncMeta(ctx context.Context) (int64, int64, error) {
 // Handler handles HTTP requests for sync endpoints.
 type Handler struct {
 	syncer PushSyncer
+	puller PullSyncer
 }
 
-// NewHandler constructs an HTTP handler with the given syncer.
-func NewHandler(syncer PushSyncer) *Handler {
-	return &Handler{syncer: syncer}
+// NewHandler constructs an HTTP handler with the given syncer and optional puller.
+func NewHandler(syncer PushSyncer, puller ...PullSyncer) *Handler {
+	h := &Handler{syncer: syncer}
+	if len(puller) > 0 {
+		h.puller = puller[0]
+	}
+	return h
+}
+
+// SetPuller sets or updates the PullSyncer on the handler.
+func (h *Handler) SetPuller(puller PullSyncer) {
+	h.puller = puller
 }
 
 // HandlePush handles POST /api/v1/sync/push.

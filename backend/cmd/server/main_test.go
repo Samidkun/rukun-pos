@@ -39,3 +39,19 @@ func TestSyncPushRouteRegistered(t *testing.T) {
 		t.Fatalf("expected status 400 for empty push body on registered route, got %d: %s", rec.Code, rec.Body.String())
 	}
 }
+
+func TestSyncPullRouteRegistered(t *testing.T) {
+	r := buildRouter(nil)
+
+	// Send request with invalid since parameter to verify the route is mounted and handled
+	req := httptest.NewRequest(http.MethodGet, "/api/v1/sync/pull?since=-1", nil)
+	rec := httptest.NewRecorder()
+
+	r.ServeHTTP(rec, req)
+
+	// Route should be found and handler should reject negative since with 400 Bad Request
+	if rec.Code != http.StatusBadRequest {
+		t.Fatalf("expected status 400 for invalid query parameter on registered pull route, got %d: %s", rec.Code, rec.Body.String())
+	}
+}
+
