@@ -6,6 +6,9 @@ import '../../../core/theme/app_colors.dart';
 import '../../../data/db/app_database.dart';
 import '../domain/cart_notifier.dart';
 import '../../history/presentation/history_screen.dart';
+import '../../sync/presentation/sync_badge.dart';
+import '../../sync_inspector/presentation/sync_inspector_screen.dart';
+import '../../../data/sync/sync_status_notifier.dart';
 import 'widgets/cart_sheet.dart';
 import 'widgets/product_grid.dart';
 
@@ -114,41 +117,24 @@ class _CashierScreenState extends ConsumerState<CashierScreen> {
           // Live Sync Indicator Badge
           pendingOutboxAsync.when(
             data: (count) {
-              final isSynced = count == 0;
-              return Container(
-                margin: const EdgeInsets.only(right: 12),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isSynced
-                      ? AppColors.accentSuccess.withValues(alpha: 0.1)
-                      : AppColors.accentWarning.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: isSynced ? AppColors.accentSuccess : AppColors.accentWarning,
-                    width: 0.8,
+              // Synchronize notifier with current DB count
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  ref.read(syncStatusProvider.notifier).updatePendingCount(count);
+                }
+              });
+
+              return Padding(
+                padding: const EdgeInsets.only(right: 12),
+                child: Center(
+                  child: SyncBadge(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const SyncInspectorScreen()),
+                      );
+                    },
                   ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: 6,
-                      height: 6,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isSynced ? AppColors.accentSuccess : AppColors.accentWarning,
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Text(
-                      isSynced ? 'Tersinkron' : '$count Tertunda',
-                      style: TextStyle(
-                        color: isSynced ? AppColors.accentSuccess : AppColors.accentWarning,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
                 ),
               );
             },
