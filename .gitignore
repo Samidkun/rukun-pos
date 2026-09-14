@@ -1,24 +1,48 @@
+# Environment and Secrets
+.env
+.env.*
+!.env.example
+*.local.env
+
+# Database Data
+.pgdata/
+
+# OS Metadata
+.DS_Store
+Thumbs.db
+
+# IDE & Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Go
+backend/bin/
+backend/server
+*.exe
+*.test
+*.out
+backend/coverage.out
+backend/tmp/
+
 # Flutter / Dart
 mobile/.dart_tool/
 mobile/build/
 mobile/.flutter-plugins*
+mobile/.packages
+mobile/.pub/
+mobile/.pub-cache/
 **/*.g.dart
 **/*.freezed.dart
+mobile/.fvm/flutter_sdk
+mobile/.fvm/cache
 
-# Go
-backend/bin/
-backend/tmp/
-
-# Node / Next
+# Web / Dashboard
 dashboard/node_modules/
 dashboard/.next/
+dashboard/dist/
 node_modules/
 
-# Env & secrets
-.env
-.env.*
-!.env.example
-
-# OS / editor
-.DS_Store
+# Logs
 *.log
