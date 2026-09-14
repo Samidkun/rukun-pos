@@ -54,10 +54,10 @@ Dua aliran data yang **tidak pernah menulis baris yang sama**:
 
 | Aliran | Pemilik | Arah | Konflik |
 |---|---|---|---|
-| **Config** (produk, harga, kategori, user) | **Server** | turun ke bawah (terminal cuma niru) | ⚠️ jarang → LWW per-field |
+| **Config** (produk, harga, kategori, user) | **Server-authoritative**, tapi terminal **boleh mengedit** (mis. ubah harga di device) | **bidirectional** | ⚠️ jarang → **LWW per-field** |
 | **Sales** (penjualan, gerakan stok) | **Terminal** | naik ke atas (append-only) | ❌ tidak ada |
 
-Karena penjualan hanya naik dan konfigurasi hanya turun, keduanya **tidak pernah rebutan baris** → sebagian besar konflik hilang *by design*, bukan diselesaikan dengan mekanisme merge yang rumit.
+Karena penjualan hanya naik dan konfigurasi turun secara dominan, keduanya **jarang rebutan baris** → sebagian besar konflik hilang *by design*, bukan diselesaikan dengan mekanisme merge yang rumit. Satu-satunya entity yang benar-benar **bidirectional** adalah **produk** (server push katalog; terminal boleh push edit harga/nama) — dan itu diselesaikan deterministik via HLC + LWW per-field (§6.2).
 
 ### 3.2 Prinsip #2 — Sales Append-Only, Stok Derived
 
