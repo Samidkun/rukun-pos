@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../data/db/app_database.dart';
 import '../domain/cart_notifier.dart';
+import '../../history/presentation/history_screen.dart';
 import 'widgets/cart_sheet.dart';
 import 'widgets/product_grid.dart';
 
@@ -100,6 +101,16 @@ class _CashierScreenState extends ConsumerState<CashierScreen> {
           ],
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.receipt_long_outlined, color: AppColors.textPrimary),
+            tooltip: 'Riwayat Transaksi',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const HistoryScreen()),
+              );
+            },
+          ),
           // Live Sync Indicator Badge
           pendingOutboxAsync.when(
             data: (count) {

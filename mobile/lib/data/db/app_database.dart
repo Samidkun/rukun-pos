@@ -69,6 +69,10 @@ class AppDatabase extends _$AppDatabase {
     return (select(sales)..orderBy([(s) => OrderingTerm.desc(s.occurredAt)])).get();
   }
 
+  Future<List<SaleItem>> getSaleItems(String saleId) {
+    return (select(saleItems)..where((item) => item.saleId.equals(saleId))).get();
+  }
+
   Future<int> getNextInvoiceNumber(String series) async {
     final lastSale = await (select(sales)
           ..where((s) => s.invoiceSeries.equals(series))
