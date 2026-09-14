@@ -212,8 +212,8 @@
 - Create: `docs/DEVELOPER_RUNBOOK.md` (Arsitektur sync engine, skema HLC, cara menjalankan multi-device demo)
 - Update: `README.md`
 
-- [ ] **Step 1: Write END_USER_GUIDE.md**
-- [ ] **Step 2: Write DEVELOPER_RUNBOOK.md**
-- [ ] **Step 3: Commit:** `docs: add end-user guide, developer runbook, and portfolio demo guide`
+- [x] **Step 1: Write END_USER_GUIDE.md**
+- [x] **Step 2: Write DEVELOPER_RUNBOOK.md**
+- [x] **Step 3: Commit:** `docs: add end-user guide, developer runbook, and portfolio demo guide`
 
 ---
