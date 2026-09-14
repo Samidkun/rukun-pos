@@ -200,9 +200,9 @@
 **Files:**
 - Create: `tests/e2e/multi_terminal_sync_test.go`
 
-- [ ] **Step 1: Test Scenario: Terminal A & B sell same product while offline**
-- [ ] **Step 2: Both reconnect simultaneously -> verify zero duplicates, correct total revenue, stock negative detected**
-- [ ] **Step 3: Commit:** `test(e2e): multi-terminal simultaneous offline-to-online convergence test`
+- [x] **Step 1: Test Scenario: Terminal A & B sell same product while offline**
+- [x] **Step 2: Both reconnect simultaneously -> verify zero duplicates, correct total revenue, stock negative detected**
+- [x] **Step 3: Commit:** `test(e2e): multi-terminal simultaneous offline-to-online convergence test`
 
 ---
 
