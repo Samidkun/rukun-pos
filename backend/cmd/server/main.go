@@ -14,11 +14,12 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"rukun.pos/backend/internal/realtime"
 	"rukun.pos/backend/internal/store"
 	syncengine "rukun.pos/backend/internal/sync"
 )
 
-func buildRouter(pool *pgxpool.Pool) *chi.Mux {
+func buildRouter(pool *pgxpool.Pool, sseHub ...*realtime.Hub) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
 	r.Use(middleware.RealIP)
@@ -39,11 +40,21 @@ func buildRouter(pool *pgxpool.Pool) *chi.Mux {
 		_, _ = w.Write([]byte(`{"status":"ok","app":"rukun_backend"}`))
 	})
 
-	pushService := syncengine.NewPushService(pool)
+	var hub *realtime.Hub
+	if len(sseHub) > 0 && sseHub[0] != nil {
+		hub = sseHub[0]
+	} else {
+		hub = realtime.NewHub()
+	}
+
+	pushService := syncengine.NewPushService(pool, hub)
 	pullService := syncengine.NewPullService(pool)
 	syncHandler := syncengine.NewHandler(pushService, pullService)
 	r.Post("/api/v1/sync/push", syncHandler.HandlePush)
 	r.Get("/api/v1/sync/pull", syncHandler.HandlePull)
+
+	sseHandler := realtime.NewHandler(hub)
+	r.Get("/api/v1/realtime/sales", sseHandler.HandleSSE)
 
 	return r
 }
@@ -69,7 +80,10 @@ func main() {
 		}
 	}
 
-	r := buildRouter(pool)
+	sseHub := realtime.NewHub()
+	defer sseHub.Close()
+
+	r := buildRouter(pool, sseHub)
 
 	server := &http.Server{
 		Addr:         fmt.Sprintf(":%s", port),

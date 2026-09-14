@@ -55,3 +55,18 @@ func TestSyncPullRouteRegistered(t *testing.T) {
 	}
 }
 
+func TestRealtimeSalesRouteRegistered(t *testing.T) {
+	r := buildRouter(nil)
+
+	// Sending a non-GET method to /api/v1/realtime/sales should return 405 Method Not Allowed
+	req := httptest.NewRequest(http.MethodPost, "/api/v1/realtime/sales", nil)
+	rec := httptest.NewRecorder()
+
+	r.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("expected status 405 for POST on realtime sales route, got %d: %s", rec.Code, rec.Body.String())
+	}
+}
+
+

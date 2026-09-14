@@ -174,9 +174,9 @@
 - Create: `backend/internal/realtime/handler.go`
 - Test: `backend/internal/realtime/sse_test.go`
 
-- [ ] **Step 1: Broadcast newly synced transactions to connected owner clients via SSE**
-- [ ] **Step 2: Heartbeat & auto-reconnect handling**
-- [ ] **Step 3: Commit:** `feat(backend): real-time sse broadcast hub for owner dashboard`
+- [x] **Step 1: Broadcast newly synced transactions to connected owner clients via SSE**
+- [x] **Step 2: Heartbeat & auto-reconnect handling**
+- [x] **Step 3: Commit:** `feat(backend): real-time sse broadcast hub for owner dashboard`
 
 ---
 

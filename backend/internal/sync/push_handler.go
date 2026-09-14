@@ -33,6 +33,28 @@ type SaleItemData struct {
 	Qty        int    `json:"qty"`
 }
 
+// EventBroadcaster defines the contract for broadcasting realtime events to subscribers.
+type EventBroadcaster interface {
+	Broadcast(eventType string, data interface{}) error
+}
+
+// SaleBroadcast represents real-time sale data broadcast via SSE to owner dashboards.
+type SaleBroadcast struct {
+	Type          string         `json:"type"`
+	EventID       string         `json:"event_id"`
+	TerminalID    string         `json:"terminal_id"`
+	DeviceID      string         `json:"device_id"`
+	SaleID        string         `json:"sale_id"`
+	InvoiceSeries string         `json:"invoice_series"`
+	InvoiceNumber int64          `json:"invoice_number"`
+	TotalCents    int64          `json:"total_cents"`
+	PaymentMethod string         `json:"payment_method"`
+	OccurredAt    string         `json:"occurred_at"`
+	Items         []SaleItemData `json:"items"`
+	ServerSeq     int64          `json:"server_seq"`
+	HLC           *string        `json:"hlc,omitempty"`
+}
+
 // PushSyncer defines the interface for batch push processing.
 type PushSyncer interface {
 	ProcessPush(ctx context.Context, req *store.SyncPushRequest) (*store.SyncPushResponse, error)
@@ -40,12 +62,22 @@ type PushSyncer interface {
 
 // PushService implements PushSyncer with transactional PostgreSQL materialization.
 type PushService struct {
-	pool *pgxpool.Pool
+	pool        *pgxpool.Pool
+	broadcaster EventBroadcaster
 }
 
 // NewPushService initializes a new PushService backed by pgxpool.
-func NewPushService(pool *pgxpool.Pool) *PushService {
-	return &PushService{pool: pool}
+func NewPushService(pool *pgxpool.Pool, broadcaster ...EventBroadcaster) *PushService {
+	s := &PushService{pool: pool}
+	if len(broadcaster) > 0 {
+		s.broadcaster = broadcaster[0]
+	}
+	return s
+}
+
+// SetBroadcaster attaches or updates the realtime event broadcaster.
+func (s *PushService) SetBroadcaster(b EventBroadcaster) {
+	s.broadcaster = b
 }
 
 // ProcessPush applies a batch of sync events transactionally.
@@ -146,8 +178,8 @@ RETURNING server_seq, received_at;
 	}
 
 	// Materialize sales if event is sale.create
+	var sale SalePayload
 	if evt.EntityType == "sale" && evt.Op == "create" {
-		var sale SalePayload
 		if err := json.Unmarshal(evt.Payload, &sale); err != nil {
 			_ = tx.Rollback(ctx)
 			reason := "invalid sale payload: " + err.Error()
@@ -219,7 +251,54 @@ ON CONFLICT (id) DO NOTHING;
 		return 0, false, "", fmt.Errorf("commit tx: %w", err)
 	}
 
+	if evt.EntityType == "sale" && evt.Op == "create" {
+		_ = s.BroadcastSale(evt, &sale, serverSeq)
+	}
+
 	return serverSeq, true, "", nil
+}
+
+// BroadcastSale notifies registered broadcasters of a successfully materialized sale.
+func (s *PushService) BroadcastSale(evt *store.Event, sale *SalePayload, serverSeq int64) error {
+	if s.broadcaster == nil {
+		return nil
+	}
+
+	entityID := evt.EntityID
+	if entityID == "" {
+		entityID = evt.EventID
+	}
+	saleID := sale.SaleID
+	if saleID == "" {
+		saleID = entityID
+	}
+	series := sale.InvoiceSeries
+	if series == "" {
+		series = evt.TerminalID
+	}
+	paymentMethod := sale.PaymentMethod
+	if paymentMethod == "" {
+		paymentMethod = "cash"
+	}
+
+	broadcastData := SaleBroadcast{
+		Type:          "sale.created",
+		EventID:       evt.EventID,
+		TerminalID:    evt.TerminalID,
+		DeviceID:      evt.DeviceID,
+		SaleID:        saleID,
+		InvoiceSeries: series,
+		InvoiceNumber: sale.InvoiceNumber,
+		TotalCents:    sale.TotalCents,
+		PaymentMethod: paymentMethod,
+		OccurredAt:    sale.OccurredAt,
+		Items:         sale.Items,
+		ServerSeq:     serverSeq,
+		HLC:           evt.HLC,
+	}
+
+	// ponytail: fire-and-forget broadcast without blocking push; upgrade to worker pool if subscriber queue latency grows.
+	return s.broadcaster.Broadcast("sale.created", broadcastData)
 }
 
 func (s *PushService) recordRejectedEvent(ctx context.Context, evt *store.Event, reason string) error {
@@ -274,8 +353,9 @@ func (s *PushService) getSyncMeta(ctx context.Context) (int64, int64, error) {
 
 // Handler handles HTTP requests for sync endpoints.
 type Handler struct {
-	syncer PushSyncer
-	puller PullSyncer
+	syncer      PushSyncer
+	puller      PullSyncer
+	broadcaster EventBroadcaster
 }
 
 // NewHandler constructs an HTTP handler with the given syncer and optional puller.
@@ -290,6 +370,14 @@ func NewHandler(syncer PushSyncer, puller ...PullSyncer) *Handler {
 // SetPuller sets or updates the PullSyncer on the handler.
 func (h *Handler) SetPuller(puller PullSyncer) {
 	h.puller = puller
+}
+
+// SetBroadcaster configures a realtime broadcaster on the handler and any underlying PushService.
+func (h *Handler) SetBroadcaster(b EventBroadcaster) {
+	h.broadcaster = b
+	if ps, ok := h.syncer.(*PushService); ok {
+		ps.SetBroadcaster(b)
+	}
 }
 
 // HandlePush handles POST /api/v1/sync/push.

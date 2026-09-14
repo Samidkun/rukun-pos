@@ -533,3 +533,75 @@ func TestPushService_LiveDB(t *testing.T) {
 		t.Errorf("expected reject_reason to mention invalid sale payload, got %q", rejectReason)
 	}
 }
+
+type mockEventBroadcaster struct {
+	eventType string
+	data      interface{}
+	called    bool
+}
+
+func (m *mockEventBroadcaster) Broadcast(eventType string, data interface{}) error {
+	m.eventType = eventType
+	m.data = data
+	m.called = true
+	return nil
+}
+
+func TestPushService_BroadcastSale(t *testing.T) {
+	mock := &mockEventBroadcaster{}
+	svc := NewPushService(nil, mock)
+
+	evt := &store.Event{
+		EventID:    "evt-bc-1",
+		TerminalID: "Kasir 1",
+		DeviceID:   "dev-01",
+		EntityType: "sale",
+		Op:         "create",
+	}
+
+	sale := &SalePayload{
+		SaleID:        "sale-bc-1",
+		InvoiceSeries: "INV-2026",
+		InvoiceNumber: 42,
+		TotalCents:    150000,
+		PaymentMethod: "cash",
+		OccurredAt:    "2026-09-14T12:00:00Z",
+		Items: []SaleItemData{
+			{ID: "item-1", ProductID: "p1", Name: "Kopi Susu", PriceCents: 150000, Qty: 1},
+		},
+	}
+
+	err := svc.BroadcastSale(evt, sale, 101)
+	if err != nil {
+		t.Fatalf("unexpected BroadcastSale error: %v", err)
+	}
+
+	if !mock.called {
+		t.Fatal("expected broadcaster to be called")
+	}
+	if mock.eventType != "sale.created" {
+		t.Fatalf("expected eventType 'sale.created', got %s", mock.eventType)
+	}
+
+	payload, ok := mock.data.(SaleBroadcast)
+	if !ok {
+		t.Fatalf("expected payload to be SaleBroadcast, got %T", mock.data)
+	}
+	if payload.SaleID != "sale-bc-1" || payload.TotalCents != 150000 || payload.ServerSeq != 101 {
+		t.Errorf("unexpected broadcast payload: %+v", payload)
+	}
+
+	// Test nil broadcaster doesn't error
+	svcNil := NewPushService(nil)
+	if err := svcNil.BroadcastSale(evt, sale, 102); err != nil {
+		t.Errorf("expected nil broadcaster to return nil error, got %v", err)
+	}
+
+	// Test Handler SetBroadcaster forwards to PushService
+	handler := NewHandler(svcNil)
+	handler.SetBroadcaster(mock)
+	if svcNil.broadcaster == nil {
+		t.Error("expected Handler.SetBroadcaster to update underlying PushService broadcaster")
+	}
+}
+
