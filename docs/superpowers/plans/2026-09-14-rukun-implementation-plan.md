@@ -94,10 +94,10 @@
 - Create: `backend/internal/store/events.go`
 - Test: `backend/internal/store/events_test.go`
 
-- [ ] **Step 1: Goose migrations with append-only `sync_events` table**
-- [ ] **Step 2: Idempotency table & unique constraint on `(device_id, client_event_id)`**
-- [ ] **Step 3: Write tests for event insertion and duplicate drop**
-- [ ] **Step 4: Commit:** `feat(backend): postgresql event store and migrations with idempotency guards`
+- [x] **Step 1: Goose migrations with append-only `sync_events` table**
+- [x] **Step 2: Idempotency table & unique constraint on `(device_id, client_event_id)`**
+- [x] **Step 3: Write tests for event insertion and duplicate drop**
+- [x] **Step 4: Commit:** `feat(backend): postgresql event store and migrations with idempotency guards`
 
 ---
 
