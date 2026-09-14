@@ -77,10 +77,10 @@
 - Create: `mobile/lib/features/history/presentation/receipt_preview_screen.dart`
 - Test: `mobile/test/features/receipt_test.dart`
 
-- [ ] **Step 1: Screen list riwayat transaksi lokal (status: Pending Sync vs Synced)**
-- [ ] **Step 2: Struk preview format 58mm / 80mm monospaced clean**
-- [ ] **Step 3: Share struk via image/text**
-- [ ] **Step 4: Commit:** `feat(mobile): sales history and monospaced receipt preview`
+- [x] **Step 1: Screen list riwayat transaksi lokal (status: Pending Sync vs Synced)**
+- [x] **Step 2: Struk preview format 58mm / 80mm monospaced clean**
+- [x] **Step 3: Share struk via image/text**
+- [x] **Step 4: Commit:** `feat(mobile): sales history and monospaced receipt preview`
 
 ---
 
