@@ -34,9 +34,9 @@
 - Create: `mobile/lib/core/theme/app_theme.dart`
 - Test: `mobile/test/core/theme_test.dart`
 
-- [ ] **Step 1: Write mobile/DESIGN.md specification**
-- [ ] **Step 2: Implement AppColors & AppTheme in Flutter**
-- [ ] **Step 3: Verify and commit:** `feat(mobile): add design contract and core theme tokens`
+- [x] **Step 1: Write mobile/DESIGN.md specification**
+- [x] **Step 2: Implement AppColors & AppTheme in Flutter**
+- [x] **Step 3: Verify and commit:** `feat(mobile): add design contract and core theme tokens`
 
 ---
 
