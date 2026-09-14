@@ -1,4 +1,4 @@
-# Kasirin — Offline-First Mobile POS: Design Spec
+# Rukun — Offline-First Mobile POS: Design Spec
 
 > **Status:** Approved (design phase) · **Tanggal:** 2026-09-14 · **Pemilik:** Samid
 > **Klasifikasi:** Architectural (project baru) · **Sumber proses:** `superpowers:brainstorming`
@@ -8,7 +8,7 @@
 
 ## 1. Ringkasan Eksekutif
 
-**Kasirin** adalah aplikasi kasir (POS) mobile **offline-first**: kasir bisa bertransaksi penuh tanpa internet, dan data menyatu otomatis saat koneksi kembali — aman untuk **multi-device** (2+ HP kasir + 1 dashboard owner), tanpa duplikasi dan tanpa kehilangan data.
+**Rukun** adalah aplikasi kasir (POS) mobile **offline-first**: kasir bisa bertransaksi penuh tanpa internet, dan data menyatu otomatis saat koneksi kembali — aman untuk **multi-device** (2+ HP kasir + 1 dashboard owner), tanpa duplikasi dan tanpa kehilangan data.
 
 Yang membuat project ini bernilai portofolio bukan fitur kasirnya, melainkan **model sinkronisasinya**. Pendekatan yang dipilih **bukan** CRDT penuh (overkill & salah sasaran untuk POS), melainkan kombinasi yang sudah terbukti di POS produksi:
 
@@ -355,7 +355,7 @@ Sync adalah kode yang **gagal diam-diam** — testing bukan tempelan, tapi inti.
 - [ ] `docs/PRD.md` — masalah, persona, MoSCoW, non-goals
 - [ ] `docs/USER_MANUAL.md` — untuk kasir & owner (non-teknis)
 - [ ] `docs/DEVELOPER_RUNBOOK.md` — untuk dev: cara jalanin, arsitektur, troubleshooting sync
-- [ ] `docs/superpowers/specs/2026-09-14-kasirin-sync-engine-design.md` — spec ini
+- [ ] `docs/superpowers/specs/2026-09-14-rukun-sync-engine-design.md` — spec ini
 - [ ] `docs/superpowers/plans/...` — implementation plan (dari writing-plans)
 - [ ] `mobile/DESIGN.md` + `dashboard/DESIGN.md` — kontrak anti-slop
 - [ ] `README.md` — masalah→solusi, diagram, GIF/video, cara jalanin
@@ -368,7 +368,7 @@ Sync adalah kode yang **gagal diam-diam** — testing bukan tempelan, tapi inti.
 ## 10. Struktur Repo (monorepo)
 
 ```
-kasirin/
+rukun/
 ├── mobile/                      # Flutter (kasir)
 │   ├── lib/
 │   │   ├── data/
@@ -473,3 +473,27 @@ Desain ini di-grounding pada pengalaman praktisi yang membangun POS offline-firs
     → Konteks: klaim "bisa digunakan tanpa internet; data transaksi otomatis terkirim saat online" pada POS lokal Indonesia.
 
 > **Catatan:** sumber-sumber di atas adalah materi eksternal (data), dipakai untuk grounding keputusan desain. Semua keputusan akhir tetap milik pemilik project.
+
+---
+
+## 14. Riset Nama (Naming)
+
+Nama **"Rukun"** dipilih lewat riset, bukan selera. Prosesnya:
+
+1. **Peta kompetitor POS Indonesia** (nama yang harus dihindari): Moka, Majoo, Pawoon, Olsera, Qasir, iSeller, Kasair, Cazh, WiraPOS, GutsyPOS, POST, Lakuloka, AppKasir, FreeKasir, Nutapos.
+   → Kesimpulan: pola "Kasir-X" jenuh & terdengar kloningan.
+2. **Kriteria:** (a) makna nyambung ke inti (konvergensi/sync), (b) kolisi ~nol di konteks app/POS, (c) **ramah orang awam** — kata sehari-hari, mudah diucap, (d) punya cerita singkat untuk interview.
+3. **Uji ketersediaan kandidat** (via pencarian web, 2026-09-14):
+
+| Kandidat | Kolisi di konteks app/POS | Catatan |
+|---|---|---|
+| **Rukun** ✅ | ~nol | Terpilih |
+| Nyala | nol | Alternatif kuat (tagline "tetap nyala") |
+| Untung | nol | Positif tapi bisa ambigu |
+| Jaga | nol | Kurang "jual" |
+| Sarujuk, Sangga, Bawana, Kukuh | ~nol | Ditolak: terlalu kuno/abstrak untuk orang awam |
+| Laris, Cuan, Mantap, Aman | **terpakai** | Dibuang |
+
+4. **Hasil cek "Rukun" (2026-09-14):** pencarian `"Rukun" aplikasi kasir` → 0 hasil; `"Rukun POS"` → 0 hasil relevan; satu kemiripan `rukun.com.so` (Somalia, sektor berbeda). Pasar POS Indonesia: bersih.
+
+**Alasan final:** *rukun* = harmonis/sepakat — metafora tepat untuk banyak kasir yang bekerja terpisah saat offline lalu **bersepakat** jadi satu kebenaran saat sync. Ramah orang awam, tapi belum dipakai.

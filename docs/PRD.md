@@ -1,4 +1,4 @@
-# 📱 PRD — Kasirin: Offline-First Mobile POS
+# 📱 PRD — Rukun: Offline-First Mobile POS
 
 > **Tagline:** Kasir yang tetap jualan walau internet mati — lalu menyatu sendiri saat online.
 >
@@ -221,6 +221,9 @@ Project dinyatakan **selesai & siap dipajang** bila:
 
 ## 12. Nama & Branding
 
-- **Nama:** **Kasirin** (dari "kasir" + akhiran ramah).
+- **Nama:** **Rukun** (bahasa Indonesia: *rukun* — harmonis, sepakat, satu kesatuan).
+- **Metafora:** banyak kasir yang "rukun" — tiap device bekerja sendiri saat offline, lalu **bersepakat** jadi satu kebenaran saat sync. Nyambung langsung ke inti project (konvergensi).
+- **Kenapa bukan "Kasirin"/pola "Kasir-X":** kata "kasir" adalah nama paling umum di industri → terdengar seperti kloningan (Kasair, Kasirku, dll). "Rukun" adalah kata sehari-hari yang **ramah orang awam**, tapi belum dipakai di pasar POS Indonesia.
+- **Cek ketersediaan (2026-09-14):** di pasar POS/startup Indonesia → bersih (0 tabrakan). Satu-satunya kemiripan: `rukun.com.so` ("Digital Systems for Somali Businesses") — pasar & sektor berbeda, bukan POS Indonesia.
 - **Tagline:** *"Jualan terus, walau internet mati."*
 - **Vibe UI:** bersih, gelap (dark), angka monospace, tombol besar (dipakai buru-buru pakai jempol).
