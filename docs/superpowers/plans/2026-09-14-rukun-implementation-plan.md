@@ -134,10 +134,10 @@
 - Create: `mobile/lib/features/sync/presentation/sync_badge.dart`
 - Test: `mobile/test/sync/sync_worker_test.dart`
 
-- [ ] **Step 1: Outbox loop: check connectivity -> push pending events -> mark synced**
-- [ ] **Step 2: Pull catalog updates -> update local Drift tables**
-- [ ] **Step 3: Visual Sync Badge: Green (Synced), Yellow (Pending N items), Red (Offline)**
-- [ ] **Step 4: Commit:** `feat(mobile): outbox background sync worker and live status badge`
+- [x] **Step 1: Outbox loop: check connectivity -> push pending events -> mark synced**
+- [x] **Step 2: Pull catalog updates -> update local Drift tables**
+- [x] **Step 3: Visual Sync Badge: Green (Synced), Yellow (Pending N items), Red (Offline)**
+- [x] **Step 4: Commit:** `feat(mobile): outbox background sync worker and live status badge`
 
 ---
 
@@ -147,11 +147,11 @@
 - Create: `mobile/lib/features/oversold/presentation/oversold_screen.dart`
 - Test: `mobile/test/sync/conflict_test.dart`
 
-- [ ] **Step 1: Stock ledger: balance = SUM(inflow - outflow)**
-- [ ] **Step 2: Handle negative stock gracefully when 2 offline terminals sell the same item**
-- [ ] **Step 3: Product update LWW with Hybrid Logical Clock (HLC)**
-- [ ] **Step 4: Oversold audit screen for cashier & owner**
-- [ ] **Step 5: Commit:** `feat(mobile): conflict resolver with stock ledger and oversold alert`
+- [x] **Step 1: Stock ledger: balance = SUM(inflow - outflow)**
+- [x] **Step 2: Handle negative stock gracefully when 2 offline terminals sell the same item**
+- [x] **Step 3: Product update LWW with Hybrid Logical Clock (HLC)**
+- [x] **Step 4: Oversold audit screen for cashier & owner**
+- [x] **Step 5: Commit:** `feat(mobile): conflict resolver with stock ledger and oversold alert`
 
 ---
 
@@ -160,9 +160,9 @@
 - Create: `mobile/lib/features/sync_inspector/presentation/sync_inspector_screen.dart`
 - Test: `mobile/test/features/sync_inspector_test.dart`
 
-- [ ] **Step 1: Raw event viewer: inspect outbox queue, JSON payload, retry count**
-- [ ] **Step 2: Manual trigger: "Simulate Offline", "Force Push", "Corrupt Network Packet"**
-- [ ] **Step 3: Commit:** `feat(mobile): sync inspector debug screen for live interview demo`
+- [x] **Step 1: Raw event viewer: inspect outbox queue, JSON payload, retry count**
+- [x] **Step 2: Manual trigger: "Simulate Offline", "Force Push", "Corrupt Network Packet"**
+- [x] **Step 3: Commit:** `feat(mobile): sync inspector debug screen for live interview demo`
 
 ---
 
