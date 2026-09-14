@@ -48,10 +48,10 @@
 - Create: `mobile/lib/data/db/tables.dart` (Tabel: `products`, `sales`, `sale_items`, `stock_ledger`, `outbox_events`, `sync_state`)
 - Test: `mobile/test/data/db_test.dart`
 
-- [ ] **Step 1: Define tables with drift/sqlite** (UUID primary keys, client_timestamp, synced_at)
-- [ ] **Step 2: Implement DAO for Products, Sales, and Outbox**
-- [ ] **Step 3: Write tests for local insertion & outbox generation**
-- [ ] **Step 4: Commit:** `feat(mobile): local drift database schema and outbox event tables`
+- [x] **Step 1: Define tables with drift/sqlite** (UUID primary keys, client_timestamp, synced_at)
+- [x] **Step 2: Implement DAO for Products, Sales, and Outbox**
+- [x] **Step 3: Write tests for local insertion & outbox generation**
+- [x] **Step 4: Commit:** `feat(mobile): local drift database schema and outbox event tables`
 
 ---
 
