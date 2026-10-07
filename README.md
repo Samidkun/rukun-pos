@@ -3,6 +3,12 @@
 > **"Jualan terus, walau internet mati."**  
 > **Versi Rilis:** `RILIS-2026.09.14`
 
+
+
+<p align="center">
+  <img src="docs/screenshots/preview.png" alt="Application Preview" width="100%" style="border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1);" />
+</p>
+
 Rukun adalah aplikasi Point of Sale (POS) mobile offline-first dengan arsitektur multi-terminal terdistribusi yang menyatu secara konsisten (*convergent*) saat kembali online tanpa duplikasi transaksi dan tanpa data hilang.
 
 ## Tech Stack
